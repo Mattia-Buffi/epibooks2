@@ -1,24 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
+import MyNav from './components/MyNav';
+import ThemeContextProvider from './components/ThemeContextProvider';
+import AllBooks from './components/AllBooks';
+import { useState } from 'react';
+import MenuCategory from './components/MenuCategory';
 
 function App() {
+  const menuNav=['HOME','Product','Browse']
+  const [category,setCategory]=useState(null)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeContextProvider>
+      <MyNav menu={menuNav}/>
+      {category&&(
+        <AllBooks category={category} />
+      )}
+      {category==null && (
+        <MenuCategory setCategory={setCategory}/>
+      )}
+    </ThemeContextProvider>
   );
 }
 
