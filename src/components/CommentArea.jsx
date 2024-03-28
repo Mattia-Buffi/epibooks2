@@ -8,7 +8,8 @@ import AddComment from './AddComment'
 
 export default function CommentArea({selected}) {
   const [allComment,setAllComment]=useState('');
-  const [loader,setLoader]=useState(false)
+  const [loader,setLoader]=useState(false);
+  const [newComment,setNewComment]=useState({});
 
      //Endpoint
   const serverAPI='https://striveschool-api.herokuapp.com/api';
@@ -32,10 +33,30 @@ export default function CommentArea({selected}) {
     } catch (err) {
       console.error(err)
     }
+  }
+  async function upLoadComment(){
+    let body={method:"POST", body:JSON.stringify(newComment),...depedApi}
+    console.log(body);
+    try {let response = await fetch(serverAPI+'/comments',body)
+    if(response.ok){
+      //messaggio di evvenuto inserimento
+      downloadComment()
+    }else{
+      const error = new Error(`HTTP Error! Status: ${response.status}`)
+      error.response=response;
+      throw error;
+    }    
+    } catch (error) {
+        console.error(error)
+    }
   } 
   useEffect(()=>{
     selected && downloadComment()
   },[selected])
+
+  useEffect(()=>{
+    newComment&&upLoadComment();
+  },[newComment])
   
   return (
     <div className='me-4 pb-4'>
@@ -46,11 +67,11 @@ export default function CommentArea({selected}) {
         {loader && (
           new Array(3).fill(0).map((el)=><SkeletonComment key={el}/>)
         )}
-        {!allComment && <h3>No comment yet. Be the first below</h3>}
+        {!allComment && <h3>No comment yet. Be the first below NON FUNZIONA </h3>}
         {allComment && (
           allComment.map((el)=><SingleComment key={el._id} comment={el}/>)
         )}
-        <AddComment />
+        <AddComment asin={selected.asin} setNewComment={setNewComment}/>
       </>       
     )}
     </div>

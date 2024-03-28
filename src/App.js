@@ -1,24 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
-import MyNav from './components/MyNav';
+//context
 import ThemeContextProvider from './components/ThemeContextProvider';
-import AllBooks from './components/AllBooks';
-import { useState } from 'react';
-import MenuCategory from './components/MenuCategory';
+import MenuProvider from './components/MenuContext';
+//Hook
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+//component
+import Home from './components/Home';
+import NotFound from './components/NotFound';
+import BookDetails from './components/BookDetails';
 
 function App() {
-  const menuNav=['HOME','Product','Browse']
-  const [category,setCategory]=useState(null)
 
   return (
     <ThemeContextProvider>
-      <MyNav menu={menuNav}/>
-      {category&&(
-        <AllBooks category={category} />
-      )}
-      {category==null && (
-        <MenuCategory setCategory={setCategory}/>
-      )}
+    <MenuProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/*' element={<NotFound/>}/>
+          <Route path='/BookDetails/:asin' element={<BookDetails/>}/>
+        </Routes>
+      </BrowserRouter>
+    </MenuProvider>
     </ThemeContextProvider>
   );
 }

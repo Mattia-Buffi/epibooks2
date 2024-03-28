@@ -2,9 +2,11 @@ import React from 'react'
 import { Nav,Navbar,Container,Form,Button } from 'react-bootstrap'
 import {ThemeContext} from './ThemeContextProvider'
 import { useContext } from 'react'
+import { MenuProvider } from './MenuContext'
 
-export default function MyNav({menu}) {
+export default function MyNav() {
     const {theme,setTheme}=useContext(ThemeContext)
+    const {menuNav}=useContext(MenuProvider)
   return (
     <Navbar bg={theme} data-bs-theme={theme} expand='lg' className='pt-4'>
         <Container>
@@ -12,7 +14,7 @@ export default function MyNav({menu}) {
           <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
           <Nav className="me-auto" navbarScroll>
-            {menu.map((el)=><Nav.Link href="#" key={el}>{el}</Nav.Link>)}
+            {menuNav.map((el)=><Nav.Link href="#" key={el}>{el}</Nav.Link>)}
           </Nav>
           </Navbar.Collapse>
         </Container>
