@@ -7,20 +7,20 @@ import SingleComment from './SingleComment'
 import AddComment from './AddComment'
 
 export default function CommentArea({selected}) {
-  const [allComment,setAllComment]=useState('');
+  const [allComment,setAllComment]=useState([]);
   const [loader,setLoader]=useState(false);
   const [newComment,setNewComment]=useState({});
 
      //Endpoint
   const serverAPI='https://striveschool-api.herokuapp.com/api';
-  const idAPI='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2Q4MTljNDM3MDAwMTkzYzM1ODYiLCJpYXQiOjE3MTA5NDcyODUsImV4cCI6MTcxMjE1Njg4NX0.-DYQq1xATYFJ21cVJHxqZR-SBwBGUUPVvuHuSroUo_E';
+  const idAPI='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2Q4MTljNDM3MDAwMTkzYzM1ODYiLCJpYXQiOjE3MTIxNzUwMTYsImV4cCI6MTcxMzM4NDYxNn0.wSgWFKAgLIaiSL3EHz27Af6qZ_rp4hiwt-BntblIkqA';
   const depedApi={
     headers:{"Authorization":idAPI,"content-type":"application/JSON"}
 }
   async function downloadComment(){
     setLoader(true);
     try {
-      let response= await fetch(serverAPI+'/books/'+selected.asin+'/comments',depedApi)
+      let response= await fetch(serverAPI+'/books/'+selected.asin+'/comments',depedApi);
       if(response.ok){
         const result=await response.json();
         setLoader(false);
@@ -36,7 +36,6 @@ export default function CommentArea({selected}) {
   }
   async function upLoadComment(){
     let body={method:"POST", body:JSON.stringify(newComment),...depedApi}
-    console.log(body);
     try {let response = await fetch(serverAPI+'/comments',body)
     if(response.ok){
       //messaggio di evvenuto inserimento
@@ -51,11 +50,12 @@ export default function CommentArea({selected}) {
     }
   } 
   useEffect(()=>{
-    selected && downloadComment()
+    selected!=null && downloadComment()
   },[selected])
 
   useEffect(()=>{
-    newComment&&upLoadComment();
+    console.log(newComment);
+    newComment&&upLoadComment()
   },[newComment])
   
   return (
@@ -67,7 +67,7 @@ export default function CommentArea({selected}) {
         {loader && (
           new Array(3).fill(0).map((el)=><SkeletonComment key={el}/>)
         )}
-        {!allComment && <h3>No comment yet. Be the first below NON FUNZIONA </h3>}
+        {allComment.length===0 && <h3 className='mt-4'>No comment yet. Be the first below</h3>}
         {allComment && (
           allComment.map((el)=><SingleComment key={el._id} comment={el}/>)
         )}
