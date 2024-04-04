@@ -18,7 +18,7 @@ export default function SingleBook({book,selected,setSelected}) {
       <Card.Body className='text-center'>
         <Card.Title>{book.title}</Card.Title>
       </Card.Body>
-      <Button className='btn-primary mb-3' onClick={()=>navigate('/BookDetails/:'+book.asin)}>More info</Button>
+      <Button className='btn-primary mb-3' onClick={()=>navigate('/BookDetails/'+book.asin)}>More info</Button>
     </Card>
   )
 }

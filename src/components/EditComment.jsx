@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react'
-import { Button , Modal , Form } from 'react-bootstrap';
+import { Button , Modal , Form , Alert } from 'react-bootstrap';
 import { ThemeContext } from './ThemeContextProvider'
 
-export default function EditComment({comment}) {
+export default function EditComment({comment,downloadComment}) {
      //Endpoint
      const serverAPI='https://striveschool-api.herokuapp.com/api/comments/';
      const idAPI='Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2Q4MTljNDM3MDAwMTkzYzM1ODYiLCJpYXQiOjE3MTIxNzUwMTYsImV4cCI6MTcxMzM4NDYxNn0.wSgWFKAgLIaiSL3EHz27Af6qZ_rp4hiwt-BntblIkqA';
@@ -13,6 +13,9 @@ export default function EditComment({comment}) {
   const [show,setShow]=useState(false);
   const [newRate,setNewRate]=useState(comment.rate)
   const [newComment,setNewComment]=useState(comment.comment)
+
+  const [secondCheck,setSecondCheck]=useState(false)
+
   async function savedEditComment(){
     let newData={
         "elementId":comment.elementId,
@@ -24,6 +27,7 @@ export default function EditComment({comment}) {
     if(response.ok){
       //messaggio di evvenuto inserimento
       setShow(false)
+      downloadComment()
     }else{
       const error = new Error(`HTTP Error! Status: ${response.status}`)
       error.response=response;
@@ -35,10 +39,11 @@ export default function EditComment({comment}) {
   
     }
   async function deleteComment(){
+    setSecondCheck(false);
     let body={method:"DELETE",...depedApi}
     try {let response = await fetch(serverAPI+comment._id,body)
     if(response.ok){
-      
+      downloadComment();
     }else{
       const error = new Error(`HTTP Error! Status: ${response.status}`)
       error.response=response;
@@ -56,7 +61,7 @@ return (
         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
         </svg>
         </Button>
-        <Button className='btn-danger p-1 me-2' onClick={()=>deleteComment()}>
+        <Button className='btn-danger p-1 me-2' onClick={()=>setSecondCheck(true)}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
             </svg>
@@ -93,6 +98,22 @@ return (
           <Button variant="primary" onClick={()=>savedEditComment()}>Change</Button>
         </Modal.Footer>
         </Modal>
+
+        <Alert show={secondCheck} variant="secondary" className='z-3'>
+        <Alert.Heading>Conferma?</Alert.Heading>
+        <p>
+          Sei sicuro di voler cancellare il commento?
+        </p>
+        <hr />
+        <div className="d-flex justify-content-end">
+        <Button onClick={() => setSecondCheck(false)} variant="outline-secondary">
+            ANNULLA
+          </Button>
+          <Button onClick={() => deleteComment()} variant="outline-danger">
+            ELIMINA
+          </Button>
+        </div>
+      </Alert>
     </div>
   )
 }

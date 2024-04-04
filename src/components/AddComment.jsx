@@ -21,18 +21,23 @@ export default function AddComment({asin,setNewComment}) {
           </svg>))
       )
     },[rate])
+    function salvaCommento(){
+      setNewComment({"comment":comment,"rate":rate,"elementId":asin})
+      setComment('')
+      setRate(1)
+    }
 
   return (
     <Form className={"border-success border rounded p-2 my-4"+(theme==='light'?'':' text-secondary')} >
         <Form.Group className="mb-3" controlId="commento">
             <Form.Label>Inserisci il tuo commento</Form.Label>
-            <Form.Control as="textarea" rows={2} data-bs-theme={theme} onChange={(e)=>setComment(e.target.value)}/>
+            <Form.Control as="textarea" rows={2} data-bs-theme={theme} value={comment} onChange={(e)=>setComment(e.target.value)}/>
         </Form.Group>
         <Form.Group className="mb-3" controlId="reting">
             <Form.Label>Inserisci rate: <strong>{rate} / 5 </strong> <span>{rateTemp}</span></Form.Label>
             <Form.Range min={1} max={5} step={1} value={rate} onChange={(e)=>setRate(e.target.value)}/>
         </Form.Group>
-        <Button variant="secondary" onClick={()=>setNewComment({"comment":comment,"rate":rate,"elementId":asin})}>Aggiungi Commento</Button>        
+        <Button variant="secondary" onClick={()=>salvaCommento()}>Aggiungi Commento</Button>        
     </Form>
   )
 }
